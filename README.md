@@ -26,3 +26,9 @@ stylesheet and the slide script are shared, so the translation folders only hold
 GitHub Pages publishes the `site/` directory as an artifact from
 `.github/workflows/pages.yml` on every push to `main` that touches it.
 URL: https://rdorta27.github.io/knowman-site/
+
+## Branding
+
+`site/branding/` is an identical copy of `core/branding/` (palette, fonts and theme).
+Do not edit it here: change `core/branding/tokens.json` and run
+`python3 scripts/build_brand.py --sync` from `core/`. `--check` fails if the copy drifts.
