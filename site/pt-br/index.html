@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>knowman · respostas das suas notas, com citações</title>
+<meta name="description" content="O knowman indexa uma pasta de notas Markdown e responde só com ela, citando o arquivo e as linhas exatas. Quando não encontra nada, ele diz isso.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../style.css">
+<link rel="alternate" hreflang="en" href="https://rdorta27.github.io/knowman-site/index.html">
+<link rel="alternate" hreflang="es" href="https://rdorta27.github.io/knowman-site/es/index.html">
+<link rel="alternate" hreflang="pt-BR" href="https://rdorta27.github.io/knowman-site/pt-br/index.html">
+<link rel="alternate" hreflang="x-default" href="https://rdorta27.github.io/knowman-site/index.html">
+</head>
+<body>
+<a class="skip" href="#main">Ir para o conteúdo</a>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="index.html"><img src="../favicon.svg" width="34" height="34" alt="">knowman</a>
+    <nav aria-label="Principal"><a href="index.html">Início</a><a href="diagrams/architecture.html">Arquitetura</a><a href="slides/deck.html">Slides</a><a class="cta" href="https://github.com/rdorta27/knowman">GitHub</a></nav>
+    <nav class="langs" aria-label="Idioma"><a href="../index.html" hreflang="en" lang="en">EN</a><a href="../es/index.html" hreflang="es" lang="es">ES</a><a href="index.html" hreflang="pt-BR" lang="pt-BR" aria-current="true">PT</a></nav>
+  </header>
+  <main id="main">
+    <section>
+      <span class="eyebrow">Notas Markdown, locais, citadas</span>
+      <h1>Pergunte às suas notas. <span>Receba o arquivo e as linhas.</span></h1>
+      <p class="lead">O knowman indexa uma pasta de arquivos <code>.md</code> e responde só com essa pasta. Quando não encontra nada, ele diz isso em vez de inventar.</p>
+      <div class="row"><a class="btn" href="diagrams/architecture.html">Ver a arquitetura</a><a class="btn alt" href="slides/deck.html">Ver os slides</a><a class="btn alt" href="https://github.com/rdorta27/knowman">GitHub</a></div>
+    </section>
+    <section>
+      <h2>Como fica</h2>
+      <!-- source: core/README.md "What it looks like" -->
+      <pre><code><span class="dim">$ knowman search "why Postgres"</span>
+decision-log.md:L5-L5
+  We chose Postgres with the pgvector extension for the vector store.
+architecture-notes.md:L5-L6
+  The store module is the only part of the codebase that speaks SQL.
+Every other module calls its functions instead of touching Postgres directly.
+decision-log.md:L1-L3
+  # Decision log
+
+## Database engine
+
+<span class="dim">$ knowman search "capital of mongolia"</span>
+No evidence found for that query.</code></pre>
+      <p class="note">Cada resultado é um trecho com o seu intervalo de linhas. Com um modelo de linguagem configurado, <code>knowman ask</code> escreve prosa a partir desses mesmos trechos. A recuperação não precisa de modelo de linguagem. Fonte: <code>core/README.md</code>.</p>
+    </section>
+    <section>
+      <h2>O que tem dentro</h2>
+      <div class="grid">
+        <div class="card"><h3>Recuperação com citações</h3><p>Os trechos mantêm o intervalo de linhas, então uma citação aponta para as linhas exatas. Se nada estiver dentro do limite de distância, é o negativo explícito.</p></div>
+        <div class="card"><h3>Acompanha as mudanças</h3><p>Um vigia transforma notas adicionadas, editadas e apagadas em trabalhos, e um trabalhador as indexa.</p></div>
+        <div class="card"><h3>Quatro formas de entrar</h3><p>Uma CLI, uma API HTTP, um servidor MCP com <code>search</code> e <code>ask</code>, e um painel de monitoramento.</p></div>
+        <div class="card"><h3>Local primeiro</h3><p>Postgres com pgvector e Ollama para os embeddings. Nenhuma chave de API é necessária; Claude, OpenAI ou Grok podem ser configurados para as respostas.</p></div>
+      </div>
+      <p class="note">Veja cada parte e o arquivo por trás dela na <a href="diagrams/architecture.html">página de arquitetura</a>.</p>
+    </section>
+    <section>
+      <h2>Instalar</h2>
+      <!-- source: core/README.md "Getting started"; the clone URL there has a typo, the real remote is rdorta27/knowman -->
+      <pre><code>git clone https://github.com/rdorta27/knowman
+cd knowman
+./install.sh
+docker compose exec api knowman search "why Postgres"</code></pre>
+      <p class="note">Precisa de Docker e do plugin do Compose. No Arch, <code>./install.sh --mode native</code> roda sem Docker. O script imprime os comandos do que falta e para em vez de instalá-lo.</p>
+    </section>
+  </main>
+  <footer><span>knowman · MIT</span><a href="diagrams/architecture.html">Arquitetura</a><a href="slides/deck.html">Slides</a><a href="https://github.com/rdorta27/knowman">GitHub</a></footer>
+</div>
+</body>
+</html>

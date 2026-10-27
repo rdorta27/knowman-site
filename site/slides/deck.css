@@ -44,7 +44,7 @@ pre .dim { color: var(--mu); }
 .js .slide { position: absolute; left: 50%; top: calc(50% - 32px); margin: 0; display: none; transform: translate(-50%, -50%) scale(var(--s, 1)); }
 .js .slide.on { display: flex; }
 .js .hud { display: flex; position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); gap: 8px; z-index: 5; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
-.hud button, .hud a { min-width: 44px; min-height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: 700 16px var(--sans); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; text-decoration: none; }
+.hud button, .hud a { white-space: nowrap; min-width: 44px; min-height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: 700 16px var(--sans); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; text-decoration: none; }
 .hud a { font-weight: 600; font-size: 14px; }
 .hud #pos { font: 600 14px var(--sans); color: var(--mu); min-width: 52px; text-align: center; }
 @page { size: 1280px 720px; margin: 0; }
@@ -55,3 +55,5 @@ pre .dim { color: var(--mu); }
   .slide, .js .slide { display: flex !important; position: relative; left: 0; top: 0; transform: none !important; margin: 0; break-after: page; page-break-after: always; }
   .hud, .js .hud { display: none !important; }
 }
+.hud a.lang { font: 700 12px var(--sans); letter-spacing: .04em; min-width: 34px; padding: 0 8px; }
+.hud a.lang[aria-current="true"] { border-color: var(--brand); color: var(--brand-ink); }

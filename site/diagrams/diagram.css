@@ -7,7 +7,7 @@ svg.arch .box { fill: var(--card); stroke-width: 2; }
 svg.arch .real .box { stroke: var(--brand); }
 svg.arch .opt .box { stroke: var(--accent); stroke-dasharray: 6 4; }
 svg.arch .t { font-size: 14px; font-weight: 700; }
-svg.arch .p { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10.5px; fill: var(--muted); }
+svg.arch .p { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10px; fill: var(--muted); }
 svg.arch .s { font-size: 10px; font-weight: 700; letter-spacing: .06em; }
 svg.arch .real .s { fill: var(--brand-ink); }
 svg.arch .opt .s { fill: var(--accent); }

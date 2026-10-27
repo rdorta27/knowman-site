@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diapositivas · knowman</title>
+<meta name="description" content="Seis diapositivas: el problema, qué hace knowman, cómo funciona, cómo se mide, cómo se instala y sus límites.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../../slides/deck.css">
+<link rel="alternate" hreflang="en" href="https://rdorta27.github.io/knowman-site/slides/deck.html">
+<link rel="alternate" hreflang="es" href="https://rdorta27.github.io/knowman-site/es/slides/deck.html">
+<link rel="alternate" hreflang="pt-BR" href="https://rdorta27.github.io/knowman-site/pt-br/slides/deck.html">
+<link rel="alternate" hreflang="x-default" href="https://rdorta27.github.io/knowman-site/slides/deck.html">
+</head>
+<body>
+<main class="deck">
+
+<section class="slide" id="s1" aria-label="El problema">
+<div class="bar"><img src="../../favicon.svg" alt=""><span>knowman</span><span class="meta">1 / 6</span></div>
+<h1>Las notas se acumulan y dejan de leerse. <span>Un asistente sin fuentes inventa.</span></h1>
+<div class="cols">
+  <div class="col">
+    <div class="card"><p><b>grep encuentra palabras, no respuestas.</b> No puede decirte qué se decidió sobre X, ni dónde está escrito.</p></div>
+    <div class="card"><p><b>Un asistente de chat puede inventar una fuente.</b> Responde con fluidez, digan lo que digan tus notas.</p></div>
+    <div class="card"><p><b>Quieres la evidencia, no una conjetura.</b> El archivo exacto y las líneas exactas, o un honesto &laquo;no se encontró nada&raquo;.</p></div>
+  </div>
+</div>
+<p class="foot">Fuente: <code>core/README.md</code>, introducción.</p>
+</section>
+
+<section class="slide" id="s2" aria-label="Qué hace">
+<div class="bar"><img src="../../favicon.svg" alt=""><span>knowman</span><span class="meta">2 / 6</span></div>
+<h1>Pregunta a tus notas Markdown. <span>Obtén el pasaje, con sus líneas.</span></h1>
+<div class="cols">
+  <div class="col">
+    <h2>Una pregunta que las notas cubren</h2>
+    <!-- source: core/README.md "What it looks like"; the passage is core/corpus/dummy/architecture-notes.md lines 5-6 -->
+    <pre><span class="dim">$ knowman search "why Postgres"</span>
+decision-log.md:L5-L5
+  We chose Postgres with the pgvector extension for the vector store.
+<span class="hl">architecture-notes.md:L5-L6</span>
+  The store module is the only part of the codebase that speaks SQL.
+  Every other module calls its functions instead of touching Postgres directly.</pre>
+  </div>
+  <div class="col">
+    <h2>Una pregunta que no</h2>
+    <!-- source: core/README.md "What it looks like" -->
+    <pre><span class="dim">$ knowman search "capital of mongolia"</span>
+No evidence found for that query.</pre>
+    <div class="card"><p>Con un modelo de lenguaje configurado, <code>ask</code> redacta prosa a partir de esos mismos pasajes y los lista como fuentes. Sin uno, igual obtienes las citas.</p></div>
+  </div>
+</div>
+<p class="foot">Corre en tu máquina: Postgres con pgvector, Ollama para los embeddings, sin clave de API.</p>
+</section>
+
+<section class="slide" id="s3" aria-label="Cómo funciona">
+<div class="bar"><img src="../../favicon.svg" alt=""><span>knowman</span><span class="meta">3 / 6</span></div>
+<h1>Un vigilante alimenta una cola. <span>Una pregunta se empareja por distancia.</span></h1>
+<div class="cols" style="flex-direction:column;gap:12px;padding-bottom:10px">
+  <p class="lane">Ingesta</p>
+  <div class="flow">
+    <div class="node"><b>Notas</b><span>archivos .md</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Vigilante</b><span>watcher.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Cola de trabajos</b><span>store.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Trabajador</b><span>worker.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Fragmentador</b><span>chunking.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Postgres</b><span>pgvector, HNSW</span></div>
+  </div>
+  <p class="lane">Consulta</p>
+  <div class="flow">
+    <div class="node"><b>Embed de la consulta</b><span>retrieval.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Trozos más cercanos</b><span>store.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Filtro de distancia</b><span>retrieval.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Citas</b><span>path:Lstart-Lend</span></div><div class="arrow">&rarr;</div>
+    <div class="node opt"><b>Respuesta del LLM</b><span>ask.py, llm/</span><em>OPCIONAL</em></div>
+  </div>
+  <p class="card" style="font-size:22px;color:var(--mu);padding:20px 24px;margin-top:8px">Cada trozo conserva el rango de líneas del que salió; eso es lo que hace exacta una cita. Si nada está dentro del umbral de distancia, el resultado es el negativo explícito y nunca se llama al modelo de lenguaje.</p>
+</div>
+<p class="foot">Diagrama completo: <code>architecture.html</code> &middot; Fuente: <code>core/README.md</code>, sección How it works.</p>
+</section>
+
+<section class="slide" id="s4" aria-label="Cómo se mide">
+<div class="bar"><img src="../../favicon.svg" alt=""><span>knowman</span><span class="meta">4 / 6</span></div>
+<h1>La recuperación se mide. <span>Ningún modelo juzga a otro modelo.</span></h1>
+<div class="cols">
+  <div class="col">
+    <div class="card">
+      <!-- source: core/README.md "What it looks like" (output of `knowman eval`: groundedness: 100.00% (25/25)); 25 = entries in core/src/knowman/evaldata/dataset.json, counted with python: 21 expect a citation, 4 expect none -->
+      <span class="big">100% <small>(25/25)</small></span>
+      <p>groundedness sobre un dataset etiquetado de 25 preguntas.</p>
+    </div>
+    <pre><span class="dim">$ knowman eval</span>
+groundedness: 100.00% (25/25), delta: +0.00%</pre>
+  </div>
+  <div class="col">
+    <div class="card"><p><b>Una tasa de acierto.</b> Una pregunta pasa cuando el archivo citado es el esperado, o cuando no se devuelve evidencia para una pregunta que no tiene.</p></div>
+    <div class="card"><p><b>Cada corrida se guarda.</b> La siguiente reporta el cambio desde la última, así que una regresión aparece como una caída.</p></div>
+    <div class="card"><p><b>Ya encontró un bug.</b> Un encabezado suelto se volvió su propio trozo y coincidía con preguntas sin relación; la evaluación lo detectó.</p></div>
+  </div>
+</div>
+<p class="foot">Fuentes: <code>core/README.md</code>, <code>core/src/knowman/evaldata/dataset.json</code>, <code>core/CHANGELOG.md</code>. El corpus de muestra es pequeño; esto es un chequeo de regresión, no un benchmark.</p>
+</section>
+
+<section class="slide" id="s5" aria-label="Cómo se instala">
+<div class="bar"><img src="../../favicon.svg" alt=""><span>knowman</span><span class="meta">5 / 6</span></div>
+<h1>Un script. <span>Comprueba y no instala nada con privilegios elevados.</span></h1>
+<div class="cols">
+  <div class="col">
+    <h2>Con Docker</h2>
+    <!-- source: core/README.md "Getting started" (clone URL corrected to the real remote) -->
+    <pre>git clone https://github.com/rdorta27/knowman
+cd knowman
+./install.sh
+docker compose exec api \
+  knowman search "why Postgres"</pre>
+    <div class="card"><p>Necesita Docker y el plugin de Compose; sin Python en el host.</p></div>
+  </div>
+  <div class="col">
+    <h2>Sin Docker (Arch)</h2>
+    <pre>./install.sh --mode native</pre>
+    <div class="card"><p>Usa Postgres, pgvector y Ollama en el host. El script imprime los comandos exactos de <code>pacman</code> y <code>systemctl</code> de lo que falta y se detiene; ejecútalos y vuelve a correrlo.</p></div>
+    <div class="card"><p>Ambos modos usan los mismos puertos, atados a <code>127.0.0.1</code>.</p></div>
+  </div>
+</div>
+<p class="foot">Fuente: <code>core/README.md</code>, <code>core/docs/running.md</code>. El instalador indexa las notas de muestra y confirma que una búsqueda real devuelve una cita real.</p>
+</section>
+
+<section class="slide" id="s6" aria-label="Límites y siguiente paso">
+<div class="bar"><img src="../../favicon.svg" alt=""><span>knowman</span><span class="meta">6 / 6</span></div>
+<h1>Lo que no es, <span>y lo que viene.</span></h1>
+<div class="cols">
+  <div class="col">
+    <h2>Límites</h2>
+    <ul>
+      <!-- source for this list: core/README.md (Not this, Configuration, Security, Roadmap) and core/CHANGELOG.md -->
+      <li><b>Solo Markdown.</b> No es un editor de notas ni un wiki; lee una carpeta que ya es tuya.</li>
+      <li><b>Los embeddings necesitan Ollama.</b> Cambiar el modelo de embeddings obliga a reindexar todo.</li>
+      <li><b>Los modelos locales pequeños dudan.</b> La respuesta es tan buena como el modelo que configures.</li>
+      <li><b>Abierto por defecto.</b> El token de la API y el límite de tasa son opcionales; actívalos antes de exponerlo más allá de localhost.</li>
+    </ul>
+  </div>
+  <div class="col">
+    <h2>Siguiente</h2>
+    <div class="card"><p>Una URL de demo pública en infraestructura cloud gratuita, con recuperación y citas funcionando sin ninguna clave de pago.</p><span class="src">core/README.md, Roadmap</span></div>
+    <div class="card"><p><b>Pruébalo:</b> <code>github.com/rdorta27/knowman</code></p></div>
+  </div>
+</div>
+</section>
+
+</main>
+<div class="hud" role="group" aria-label="Controles de diapositivas">
+  <button id="prev" type="button" aria-label="Diapositiva anterior">&larr;</button>
+  <span id="pos" aria-live="polite">1 / 6</span>
+  <button id="next" type="button" aria-label="Diapositiva siguiente">&rarr;</button>
+  <button id="full" type="button" aria-label="Pantalla completa (f)">Pantalla completa</button>
+  <a href="../../index.html">Inicio</a>
+  <a href="../../diagrams/architecture.html">Diagrama</a>
+  <a class="lang" href="../../slides/deck.html" hreflang="en" lang="en">EN</a>
+  <a class="lang" href="deck.html" hreflang="es" lang="es" aria-current="true">ES</a>
+  <a class="lang" href="../../pt-br/slides/deck.html" hreflang="pt-BR" lang="pt-BR">PT</a>
+</div>
+<script src="../../slides/deck.js"></script>
+</body>
+</html>
