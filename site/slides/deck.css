@@ -53,5 +53,8 @@ pre .dim { color: var(--mu); }
   .slide, .js .slide { display: flex !important; position: relative; left: 0; top: 0; transform: none !important; margin: 0; break-after: page; page-break-after: always; }
   .hud, .js .hud { display: none !important; }
 }
-.hud a.lang { font: 700 12px var(--sans); letter-spacing: .04em; min-width: 34px; padding: 0 8px; }
-.hud a.lang[aria-current="true"] { border-color: var(--brand); color: var(--brand-ink); }
+.hud .langs { display: inline-flex; align-items: stretch; border: 1px solid var(--line); border-radius: var(--shape-radius); background: var(--card); overflow: hidden; }
+.hud .langs a { min-width: 40px; min-height: 44px; padding: 0 10px; border: 0; border-left: 1px solid var(--line); border-radius: 0; background: transparent; color: var(--muted); font: 700 12px var(--sans); letter-spacing: .06em; text-transform: uppercase; }
+.hud .langs a:first-child { border-left: 0; }
+.hud .langs a:hover { background: var(--tint); color: var(--ink); }
+.hud .langs a[aria-current="true"] { background: var(--brand); color: var(--on-brand); border-color: var(--line); }
