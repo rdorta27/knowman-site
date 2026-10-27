@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Slides · knowman</title>
+<meta name="description" content="Six slides: the problem, what knowman does, how it works, how it is measured, how to install it, and its limits.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="deck.css">
+</head>
+<body>
+<main class="deck">
+
+<section class="slide" id="s1" aria-label="The problem">
+<div class="bar"><img src="../favicon.svg" alt=""><span>knowman</span><span class="meta">1 / 6</span></div>
+<h1>Notes pile up and stop being read. <span>An assistant without sources makes things up.</span></h1>
+<div class="cols">
+  <div class="col">
+    <div class="card"><p><b>grep finds words, not answers.</b> It cannot tell you what was decided about X, or where that is written.</p></div>
+    <div class="card"><p><b>A chat assistant can invent a source.</b> It answers fluently whether or not your notes say anything.</p></div>
+    <div class="card"><p><b>You want the evidence, not a guess.</b> The exact file and the exact lines, or an honest &ldquo;nothing found&rdquo;.</p></div>
+  </div>
+</div>
+<p class="foot">Source: <code>core/README.md</code>, introduction.</p>
+</section>
+
+<section class="slide" id="s2" aria-label="What it does">
+<div class="bar"><img src="../favicon.svg" alt=""><span>knowman</span><span class="meta">2 / 6</span></div>
+<h1>Ask your Markdown notes. <span>Get the passage, with its lines.</span></h1>
+<div class="cols">
+  <div class="col">
+    <h2>A question the notes cover</h2>
+    <!-- source: core/README.md "What it looks like"; the passage is core/corpus/dummy/architecture-notes.md lines 5-6 -->
+    <pre><span class="dim">$ knowman search "why Postgres"</span>
+decision-log.md:L5-L5
+  We chose Postgres with the pgvector extension for the vector store.
+<span class="hl">architecture-notes.md:L5-L6</span>
+  The store module is the only part of the codebase that speaks SQL.
+  Every other module calls its functions instead of touching Postgres directly.</pre>
+  </div>
+  <div class="col">
+    <h2>A question they do not</h2>
+    <!-- source: core/README.md "What it looks like" -->
+    <pre><span class="dim">$ knowman search "capital of mongolia"</span>
+No evidence found for that query.</pre>
+    <div class="card"><p>With a language model configured, <code>ask</code> writes prose from those same passages and lists them as sources. Without one, you still get the citations.</p></div>
+  </div>
+</div>
+<p class="foot">It runs on your machine: Postgres with pgvector, Ollama for embeddings, no API key required.</p>
+</section>
+
+<section class="slide" id="s3" aria-label="How it works">
+<div class="bar"><img src="../favicon.svg" alt=""><span>knowman</span><span class="meta">3 / 6</span></div>
+<h1>A watcher feeds a queue. <span>A question is matched by distance.</span></h1>
+<div class="cols" style="flex-direction:column;gap:12px;padding-bottom:10px">
+  <p class="lane">Ingest</p>
+  <div class="flow">
+    <div class="node"><b>Notes</b><span>.md files</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Watcher</b><span>watcher.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Job queue</b><span>store.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Worker</b><span>worker.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Chunker</b><span>chunking.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Postgres</b><span>pgvector, HNSW</span></div>
+  </div>
+  <p class="lane">Query</p>
+  <div class="flow">
+    <div class="node"><b>Embed query</b><span>retrieval.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Nearest chunks</b><span>store.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Distance filter</b><span>retrieval.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Citations</b><span>path:Lstart-Lend</span></div><div class="arrow">&rarr;</div>
+    <div class="node opt"><b>LLM answer</b><span>ask.py, llm/</span><em>OPTIONAL</em></div>
+  </div>
+  <p class="card" style="font-size:22px;color:var(--mu);padding:20px 24px;margin-top:8px">Each chunk keeps the line range it came from; that is what makes a citation exact. If nothing is within the distance threshold, the result is the explicit negative and the language model is never called.</p>
+</div>
+<p class="foot">Full diagram: <code>architecture.html</code> &middot; Source: <code>core/README.md</code>, How it works.</p>
+</section>
+
+<section class="slide" id="s4" aria-label="How it is measured">
+<div class="bar"><img src="../favicon.svg" alt=""><span>knowman</span><span class="meta">4 / 6</span></div>
+<h1>Retrieval is measured. <span>No model judges another model.</span></h1>
+<div class="cols">
+  <div class="col">
+    <div class="card">
+      <!-- source: core/README.md "What it looks like" (output of `knowman eval`: groundedness: 100.00% (25/25)); 25 = entries in core/src/knowman/evaldata/dataset.json, counted with python: 21 expect a citation, 4 expect none -->
+      <span class="big">100% <small>(25/25)</small></span>
+      <p>groundedness on a labeled dataset of 25 questions.</p>
+    </div>
+    <pre><span class="dim">$ knowman eval</span>
+groundedness: 100.00% (25/25), delta: +0.00%</pre>
+  </div>
+  <div class="col">
+    <div class="card"><p><b>A match rate.</b> A question passes when the cited file is the expected one, or when no evidence is returned for a question that has none.</p></div>
+    <div class="card"><p><b>Every run is stored.</b> The next run reports the change since the last, so a regression shows up as a drop.</p></div>
+    <div class="card"><p><b>It already caught a bug.</b> A lone heading became its own chunk and matched unrelated questions; the eval found it.</p></div>
+  </div>
+</div>
+<p class="foot">Sources: <code>core/README.md</code>, <code>core/src/knowman/evaldata/dataset.json</code>, <code>core/CHANGELOG.md</code>. The sample corpus is small; this is a regression check, not a benchmark.</p>
+</section>
+
+<section class="slide" id="s5" aria-label="How to install">
+<div class="bar"><img src="../favicon.svg" alt=""><span>knowman</span><span class="meta">5 / 6</span></div>
+<h1>One script. <span>It checks, then installs nothing with elevated privileges.</span></h1>
+<div class="cols">
+  <div class="col">
+    <h2>With Docker</h2>
+    <!-- source: core/README.md "Getting started" (clone URL corrected to the real remote) -->
+    <pre>git clone https://github.com/rdorta27/knowman
+cd knowman
+./install.sh
+docker compose exec api \
+  knowman search "why Postgres"</pre>
+    <div class="card"><p>Needs Docker and the Compose plugin; no Python on the host.</p></div>
+  </div>
+  <div class="col">
+    <h2>Without Docker (Arch)</h2>
+    <pre>./install.sh --mode native</pre>
+    <div class="card"><p>Uses Postgres, pgvector and Ollama on the host. The script prints the exact <code>pacman</code> and <code>systemctl</code> commands for what is missing and stops; run them and run it again.</p></div>
+    <div class="card"><p>Both modes use the same ports, bound to <code>127.0.0.1</code>.</p></div>
+  </div>
+</div>
+<p class="foot">Source: <code>core/README.md</code>, <code>core/docs/running.md</code>. The installer indexes the sample notes and confirms a real search returns a real citation.</p>
+</section>
+
+<section class="slide" id="s6" aria-label="Limits and next step">
+<div class="bar"><img src="../favicon.svg" alt=""><span>knowman</span><span class="meta">6 / 6</span></div>
+<h1>What it is not, <span>and what comes next.</span></h1>
+<div class="cols">
+  <div class="col">
+    <h2>Limits</h2>
+    <ul>
+      <!-- source for this list: core/README.md (Not this, Configuration, Security, Roadmap) and core/CHANGELOG.md -->
+      <li><b>Markdown only.</b> Not a note editor or a wiki; it reads a folder you already own.</li>
+      <li><b>Embeddings need Ollama.</b> Changing the embeddings model means re-indexing everything.</li>
+      <li><b>Small local models hedge.</b> The answer is only as good as the model you configure.</li>
+      <li><b>Open by default.</b> The API token and rate limit are opt-in; turn them on before exposing it beyond localhost.</li>
+    </ul>
+  </div>
+  <div class="col">
+    <h2>Next</h2>
+    <div class="card"><p>A public demo URL on free-tier cloud infrastructure, with retrieval and citations working without any paid key.</p><span class="src">core/README.md, Roadmap</span></div>
+    <div class="card"><p><b>Try it:</b> <code>github.com/rdorta27/knowman</code></p></div>
+  </div>
+</div>
+</section>
+
+</main>
+<div class="hud" role="group" aria-label="Slide controls">
+  <button id="prev" type="button" aria-label="Previous slide">&larr;</button>
+  <span id="pos" aria-live="polite">1 / 6</span>
+  <button id="next" type="button" aria-label="Next slide">&rarr;</button>
+  <button id="full" type="button" aria-label="Toggle full screen (f)">Full screen</button>
+  <a href="../index.html">Home</a>
+  <a href="../diagrams/architecture.html">Diagram</a>
+</div>
+<script src="deck.js"></script>
+</body>
+</html>

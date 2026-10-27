@@ -1,0 +1,57 @@
+:root { --bg: #f6f7f4; --card: #fff; --ink: #10201f; --mu: #44524f; --line: #d5dcd8; --brand: #0f766e; --brand-ink: #0b5a54; --on-brand: #fff; --tint: #e0f2ef; --accent: #c2410c; --warn: #92400e; --warn-bg: #fdecd3; --stage: #0d1a19; --serif: Georgia, "Times New Roman", serif; --sans: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; --mono: ui-monospace, Menlo, Consolas, monospace; }
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #0d1a19; --card: #142524; --ink: #e8f3f1; --mu: #a5bab6; --line: #274240; --brand: #4fd1c0; --brand-ink: #8fe8db; --on-brand: #06201d; --tint: #17403c; --accent: #f6a560; --warn: #f6b26b; --warn-bg: #3a2a12; --stage: #07100f; }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--stage); font-family: var(--sans); color: var(--ink); }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.slide { position: relative; width: 1280px; height: 720px; padding: 36px 64px 0; background: var(--bg); overflow: hidden; display: flex; flex-direction: column; gap: 20px; margin: 0 auto 24px; }
+.slide::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--brand); }
+.bar { display: flex; align-items: center; gap: 10px; font: 600 22px var(--mono); height: 36px; flex: none; }
+.bar img { width: 32px; height: 32px; }
+.bar .meta { margin-left: auto; font: 600 14px var(--sans); letter-spacing: .04em; color: var(--mu); }
+.eyebrow { align-self: flex-start; font-size: 14px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 5px 14px; border-radius: 6px; background: var(--tint); color: var(--brand-ink); }
+h1 { margin: 0; font: 600 46px/1.1 var(--serif); letter-spacing: -.015em; max-width: 1120px; }
+h1 span { color: var(--brand); }
+h2 { margin: 0; font: 600 24px var(--serif); }
+p { margin: 0; }
+.cols { display: flex; gap: 32px; flex: 1; min-height: 0; padding-bottom: 28px; }
+.col { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 14px; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 22px; display: flex; flex-direction: column; gap: 6px; }
+.card p, li { font-size: 21px; line-height: 1.4; color: var(--mu); }
+.card b, li b { color: var(--ink); }
+ul { margin: 0; padding-left: 22px; display: flex; flex-direction: column; gap: 8px; }
+.big { font: 600 72px/1 var(--serif); color: var(--brand); }
+.big small { font: 600 28px var(--sans); color: var(--mu); }
+.src { font: 14px var(--mono); color: var(--mu); }
+code { font-family: var(--mono); font-size: .88em; }
+pre { margin: 0; padding: 16px 20px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; font: 18px/1.45 var(--mono); white-space: pre-wrap; color: var(--ink); }
+pre .dim { color: var(--mu); }
+.hl { background: var(--tint); color: var(--ink); border-radius: 4px; padding: 0 3px; }
+.foot { margin-top: auto; padding-bottom: 22px; font-size: 16px; color: var(--mu); }
+.flow { display: flex; align-items: stretch; gap: 0; }
+.flow > * { flex: 1 1 0; }
+.node { background: var(--card); border: 2px solid var(--brand); border-radius: 10px; padding: 16px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.node b { font-size: 21px; }
+.node span { font: 14px var(--mono); color: var(--mu); overflow-wrap: anywhere; }
+.node.opt { border-style: dashed; border-color: var(--accent); }
+.node.opt em { font-style: normal; font-size: 12px; font-weight: 700; letter-spacing: .06em; color: var(--accent); }
+.arrow { flex: none !important; width: 26px; display: grid; place-items: center; color: var(--mu); font-size: 22px; }
+.lane { font: 700 13px var(--sans); letter-spacing: .08em; text-transform: uppercase; color: var(--mu); }
+.hud { display: none; }
+.js body, .js html { overflow: hidden; height: 100%; }
+.js .deck { position: fixed; inset: 0; }
+.js .slide { position: absolute; left: 50%; top: calc(50% - 32px); margin: 0; display: none; transform: translate(-50%, -50%) scale(var(--s, 1)); }
+.js .slide.on { display: flex; }
+.js .hud { display: flex; position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); gap: 8px; z-index: 5; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
+.hud button, .hud a { min-width: 44px; min-height: 44px; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); font: 700 16px var(--sans); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; padding: 0 14px; text-decoration: none; }
+.hud a { font-weight: 600; font-size: 14px; }
+.hud #pos { font: 600 14px var(--sans); color: var(--mu); min-width: 52px; text-align: center; }
+@page { size: 1280px 720px; margin: 0; }
+@media print {
+  :root { --bg: #fff; --card: #fff; --ink: #10201f; --mu: #44524f; --line: #d5dcd8; --brand: #0f766e; --brand-ink: #0b5a54; --tint: #e0f2ef; --accent: #c2410c; --stage: #fff; }
+  html, body { overflow: visible !important; height: auto !important; }
+  .js .deck { position: static; }
+  .slide, .js .slide { display: flex !important; position: relative; left: 0; top: 0; transform: none !important; margin: 0; break-after: page; page-break-after: always; }
+  .hud, .js .hud { display: none !important; }
+}
