@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>knowman · answers from your notes, with citations</title>
+<meta name="description" content="knowman indexes a folder of Markdown notes and answers from it only, citing the exact file and lines. When it finds nothing, it says so.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="wrap">
+  <header class="top">
+    <a class="logo" href="index.html"><img src="favicon.svg" width="34" height="34" alt="">knowman</a>
+    <nav aria-label="Main"><a href="index.html">Home</a><a href="diagrams/architecture.html">Architecture</a><a href="slides/deck.html">Slides</a><a class="cta" href="https://github.com/rdorta27/knowman">GitHub</a></nav>
+  </header>
+  <main id="main">
+    <section>
+      <span class="eyebrow">Markdown notes, local, cited</span>
+      <h1>Ask your notes. <span>Get the file and the lines.</span></h1>
+      <p class="lead">knowman indexes a folder of <code>.md</code> files and answers from that folder only. When it finds nothing, it says so instead of guessing.</p>
+      <div class="row"><a class="btn" href="diagrams/architecture.html">See the architecture</a><a class="btn alt" href="slides/deck.html">View the slides</a><a class="btn alt" href="https://github.com/rdorta27/knowman">GitHub</a></div>
+    </section>
+    <section>
+      <h2>What it looks like</h2>
+      <!-- source: core/README.md "What it looks like" -->
+      <pre><code><span class="dim">$ knowman search "why Postgres"</span>
+decision-log.md:L5-L5
+  We chose Postgres with the pgvector extension for the vector store.
+architecture-notes.md:L5-L6
+  The store module is the only part of the codebase that speaks SQL.
+Every other module calls its functions instead of touching Postgres directly.
+decision-log.md:L1-L3
+  # Decision log
+
+## Database engine
+
+<span class="dim">$ knowman search "capital of mongolia"</span>
+No evidence found for that query.</code></pre>
+      <p class="note">Each result is a passage with its line range. With a language model configured, <code>knowman ask</code> writes prose from those same passages. Retrieval needs no language model. Source: <code>core/README.md</code>.</p>
+    </section>
+    <section>
+      <h2>What is inside</h2>
+      <div class="grid">
+        <div class="card"><h3>Cited retrieval</h3><p>Chunks keep their line ranges, so a citation points at the exact lines. Nothing within the distance threshold means an explicit negative.</p></div>
+        <div class="card"><h3>Stays in step</h3><p>A watcher turns added, edited and deleted notes into jobs, and a worker indexes them.</p></div>
+        <div class="card"><h3>Four ways in</h3><p>A CLI, an HTTP API, an MCP server with <code>search</code> and <code>ask</code>, and a monitoring panel.</p></div>
+        <div class="card"><h3>Local first</h3><p>Postgres with pgvector and Ollama for embeddings. No API key is needed; Claude, OpenAI or Grok can be set for answers.</p></div>
+      </div>
+      <p class="note">See each part and the file behind it on the <a href="diagrams/architecture.html">architecture page</a>.</p>
+    </section>
+    <section>
+      <h2>Install</h2>
+      <!-- source: core/README.md "Getting started"; the clone URL there has a typo, the real remote is rdorta27/knowman -->
+      <pre><code>git clone https://github.com/rdorta27/knowman
+cd knowman
+./install.sh
+docker compose exec api knowman search "why Postgres"</code></pre>
+      <p class="note">Needs Docker and the Compose plugin. On Arch, <code>./install.sh --mode native</code> runs without Docker. The script prints the commands for anything missing and stops instead of installing it.</p>
+    </section>
+  </main>
+  <footer><span>knowman · MIT</span><a href="diagrams/architecture.html">Architecture</a><a href="slides/deck.html">Slides</a><a href="https://github.com/rdorta27/knowman">GitHub</a></footer>
+</div>
+</body>
+</html>
