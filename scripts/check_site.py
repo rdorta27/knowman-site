@@ -39,5 +39,10 @@ for path in glob.glob(f"{ROOT}/**/index.html", recursive=True) + glob.glob(f"{RO
     if INSTALL not in open(path, encoding="utf-8").read():
         errors.append(f"{path}: install command missing or changed")
 
+# the eval figure must match on every home page and deck
+for path in glob.glob(f"{ROOT}/**/index.html", recursive=True) + glob.glob(f"{ROOT}/**/deck.html", recursive=True):
+    if "25/25" not in open(path, encoding="utf-8").read():
+        errors.append(f"{path}: eval figure 25/25 missing or changed")
+
 print("\n".join(errors) or "site ok")
 sys.exit(1 if errors else 0)

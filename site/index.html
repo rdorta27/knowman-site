@@ -26,8 +26,12 @@
     <section>
       <span class="eyebrow">Markdown notes, local, cited</span>
       <h1>Ask your notes. <span>Get the file and the lines.</span></h1>
-      <p class="lead">knowman reads a folder of Markdown notes and answers your questions from those notes only. Every answer shows the file and the lines it came from. When the notes hold no answer, knowman says so.</p>
+      <p class="lead">knowman answers from your Markdown notes only, and shows the file and the lines behind every answer. When the notes hold no answer, it says so.</p>
       <div class="row"><a class="btn" href="diagrams/architecture.html">See the architecture</a><a class="btn alt" href="slides/deck.html">View the slides</a><a class="btn alt" href="https://github.com/rdorta27/knowman">GitHub</a></div>
+      <pre><code>git clone https://github.com/rdorta27/knowman
+cd knowman
+./install.sh</code></pre>
+      <p class="note">Needs Docker. <a href="#install">Details below.</a></p>
     </section>
     <section>
       <h2>What it solves</h2>
@@ -78,7 +82,7 @@ No evidence found for that query.</code></pre>
         <div class="card"><h3>Four entry points</h3><p>A CLI, an HTTP API, an MCP server with <code>search</code> and <code>ask</code>, and a monitoring panel.</p></div>
         <div class="card"><h3>Runs locally</h3><p>Postgres with pgvector and Ollama for embeddings. No API key is needed; Claude, OpenAI or Grok can be set for answers.</p></div>
       <!-- source: core/README.md "What it looks like" (groundedness: 100.00% (25/25)); 25 entries in core/src/knowman/evaldata/dataset.json -->
-        <div class="card"><h3>Measured retrieval</h3><p><code>knowman eval</code> scores 25 labeled questions: 100% (25/25). The set is small. It checks for regressions; it is not a benchmark.</p></div>
+        <div class="card wide"><h3>Measured retrieval</h3><p><code>knowman eval</code> scores 25 labeled questions: 100% (25/25). The set is small. It checks for regressions; it is not a benchmark.</p></div>
       </div>
       <p class="note">See each part and the file behind it on the <a href="diagrams/architecture.html">architecture page</a>.</p>
     </section>
@@ -87,7 +91,11 @@ No evidence found for that query.</code></pre>
       <ul><li><b>Markdown only.</b> knowman is not a note editor or a wiki. It reads a folder you already own.</li><li><b>Embeddings need Ollama.</b> A new embeddings model needs a full re-index.</li><li><b>Small local models hedge.</b> The written answer is only as good as the model you set.</li><li><b>The API is open by default.</b> Turn on <code>API_TOKEN</code> and the rate limit before you expose it beyond localhost.</li></ul>
     </section>
     <section>
-      <h2>Install</h2>
+      <h2>Frequently asked questions</h2>
+      <div class="grid"><div class="card"><h3>Do my notes leave my machine?</h3><p>No, by default. Postgres and Ollama listen on <code>127.0.0.1</code>. If you set Claude, OpenAI or Grok for answers, knowman sends your question and the cited passages to that provider.</p></div><div class="card"><h3>Does it need an API key?</h3><p>No. Retrieval, citations and eval run with no key. Only the Claude, OpenAI and Grok answers need one.</p></div><div class="card"><h3>Does it need a GPU?</h3><p>No. If the machine has <code>/dev/dri</code>, Ollama uses Vulkan. Otherwise everything runs on the CPU.</p></div><div class="card"><h3>What happens if I change the embeddings model?</h3><p>Run <code>db-init</code> and re-index every note. A different model produces a different vector space.</p></div></div>
+    </section>
+    <section>
+      <h2 id="install">Install</h2>
       <!-- source: core/README.md "Getting started"; the clone URL there has a typo, the real remote is rdorta27/knowman -->
       <pre><code>git clone https://github.com/rdorta27/knowman
 cd knowman
