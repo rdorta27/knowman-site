@@ -30,6 +30,23 @@
       <div class="row"><a class="btn" href="diagrams/architecture.html">See the architecture</a><a class="btn alt" href="slides/deck.html">View the slides</a><a class="btn alt" href="https://github.com/rdorta27/knowman">GitHub</a></div>
     </section>
     <section>
+      <h2>The idea in three parts</h2>
+      <div class="grid">
+        <div class="card"><h3>Core concept</h3><p>knowman is a program that reads a folder of Markdown notes. It answers your question with passages from those notes. Each passage shows its file and line range.</p></div>
+        <div class="card"><h3>Physical analogy</h3><p>Picture a librarian who serves one shelf only. You ask a question. The librarian hands you the matching pages, with the book and the line number. If no page matches, the librarian says so and hands you nothing.</p></div>
+      </div>
+      <div class="card"><h3>Technical mechanics</h3>
+      <ul>
+        <li><b>Watcher</b> detects each added, edited or deleted <code>.md</code> file and creates a job.</li>
+        <li><b>Worker</b> claims one job at a time and runs it.</li>
+        <li><b>Chunker</b> splits each note at blank lines and records the line range.</li>
+        <li><b>Ollama</b> converts each chunk into a vector.</li>
+        <li><b>Postgres with pgvector</b> stores the chunks and the vectors.</li>
+        <li><b>Search</b> converts your question into a vector and returns the nearest chunks.</li>
+        <li><b>Distance filter</b> drops chunks farther than 0.5. If none remain, it prints <code>No evidence found for that query.</code></li>
+      </ul></div>
+    </section>
+    <section>
       <h2>What it looks like</h2>
       <!-- source: core/README.md "What it looks like" -->
       <pre><code><span class="dim">$ knowman search "why Postgres"</span>
@@ -45,15 +62,15 @@ decision-log.md:L1-L3
 
 <span class="dim">$ knowman search "capital of mongolia"</span>
 No evidence found for that query.</code></pre>
-      <p class="note">Each result is a passage with its line range. With a language model configured, <code>knowman ask</code> writes prose from those same passages. Retrieval needs no language model. Source: <code>core/README.md</code>.</p>
+      <p class="note">Each result is a passage with its line range. With a language model configured, <code>knowman ask</code> writes prose from those same passages. Retrieval needs no language model. The program prints its messages in English in every site language. Source: <code>core/README.md</code>.</p>
     </section>
     <section>
       <h2>What is inside</h2>
       <div class="grid">
         <div class="card"><h3>Cited retrieval</h3><p>Chunks keep their line ranges, so a citation points at the exact lines. Nothing within the distance threshold means an explicit negative.</p></div>
-        <div class="card"><h3>Stays in step</h3><p>A watcher turns added, edited and deleted notes into jobs, and a worker indexes them.</p></div>
-        <div class="card"><h3>Four ways in</h3><p>A CLI, an HTTP API, an MCP server with <code>search</code> and <code>ask</code>, and a monitoring panel.</p></div>
-        <div class="card"><h3>Local first</h3><p>Postgres with pgvector and Ollama for embeddings. No API key is needed; Claude, OpenAI or Grok can be set for answers.</p></div>
+        <div class="card"><h3>Live index</h3><p>A watcher turns added, edited and deleted notes into jobs, and a worker indexes them.</p></div>
+        <div class="card"><h3>Four entry points</h3><p>A CLI, an HTTP API, an MCP server with <code>search</code> and <code>ask</code>, and a monitoring panel.</p></div>
+        <div class="card"><h3>Runs locally</h3><p>Postgres with pgvector and Ollama for embeddings. No API key is needed; Claude, OpenAI or Grok can be set for answers.</p></div>
       </div>
       <p class="note">See each part and the file behind it on the <a href="diagrams/architecture.html">architecture page</a>.</p>
     </section>

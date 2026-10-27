@@ -30,6 +30,23 @@
       <div class="row"><a class="btn" href="diagrams/architecture.html">Ver a arquitetura</a><a class="btn alt" href="slides/deck.html">Ver os slides</a><a class="btn alt" href="https://github.com/rdorta27/knowman">GitHub</a></div>
     </section>
     <section>
+      <h2>A ideia em três partes</h2>
+      <div class="grid">
+        <div class="card"><h3>Conceito central</h3><p>O knowman é um programa que lê uma pasta de notas Markdown. Ele responde à sua pergunta com trechos dessas notas. Cada trecho mostra o arquivo e o intervalo de linhas.</p></div>
+        <div class="card"><h3>Analogia física</h3><p>Imagine um bibliotecário que atende uma única estante. Você faz uma pergunta. Ele entrega as páginas que correspondem, com o livro e o número da linha. Se nenhuma página corresponde, ele avisa e não entrega nada.</p></div>
+      </div>
+      <div class="card"><h3>Mecânica técnica</h3>
+      <ul>
+        <li><b>Observador</b> detecta cada arquivo <code>.md</code> adicionado, editado ou apagado e cria uma tarefa.</li>
+        <li><b>Processador</b> pega uma tarefa por vez e a executa.</li>
+        <li><b>Fragmentador</b> divide cada nota nas linhas em branco e registra o intervalo de linhas.</li>
+        <li><b>Ollama</b> converte cada trecho em um vetor.</li>
+        <li><b>Postgres com pgvector</b> guarda os trechos e os vetores.</li>
+        <li><b>Busca</b> converte a sua pergunta em um vetor e devolve os trechos mais próximos.</li>
+        <li><b>Filtro de distância</b> descarta os trechos a mais de 0,5. Se nenhum sobra, imprime <code>No evidence found for that query.</code></li>
+      </ul></div>
+    </section>
+    <section>
       <h2>Como fica</h2>
       <!-- source: core/README.md "What it looks like" -->
       <pre><code><span class="dim">$ knowman search "why Postgres"</span>
@@ -45,15 +62,15 @@ decision-log.md:L1-L3
 
 <span class="dim">$ knowman search "capital of mongolia"</span>
 No evidence found for that query.</code></pre>
-      <p class="note">Cada resultado é um trecho com o seu intervalo de linhas. Com um modelo de linguagem configurado, <code>knowman ask</code> escreve prosa a partir desses mesmos trechos. A recuperação não precisa de modelo de linguagem. Fonte: <code>core/README.md</code>.</p>
+      <p class="note">Cada resultado é um trecho com o seu intervalo de linhas. Com um modelo de linguagem configurado, <code>knowman ask</code> escreve prosa a partir desses mesmos trechos. A recuperação não precisa de modelo de linguagem. O programa imprime suas mensagens em inglês em todos os idiomas do site. Fonte: <code>core/README.md</code>.</p>
     </section>
     <section>
       <h2>O que tem dentro</h2>
       <div class="grid">
         <div class="card"><h3>Recuperação com citações</h3><p>Os trechos mantêm o intervalo de linhas, então uma citação aponta para as linhas exatas. Se nada estiver dentro do limite de distância, é o negativo explícito.</p></div>
-        <div class="card"><h3>Acompanha as mudanças</h3><p>Um vigia transforma notas adicionadas, editadas e apagadas em trabalhos, e um trabalhador as indexa.</p></div>
-        <div class="card"><h3>Quatro formas de entrar</h3><p>Uma CLI, uma API HTTP, um servidor MCP com <code>search</code> e <code>ask</code>, e um painel de monitoramento.</p></div>
-        <div class="card"><h3>Local primeiro</h3><p>Postgres com pgvector e Ollama para os embeddings. Nenhuma chave de API é necessária; Claude, OpenAI ou Grok podem ser configurados para as respostas.</p></div>
+        <div class="card"><h3>Índice atualizado</h3><p>Um observador transforma notas adicionadas, editadas e apagadas em tarefas, e um processador as indexa.</p></div>
+        <div class="card"><h3>Quatro pontos de entrada</h3><p>Uma CLI, uma API HTTP, um servidor MCP com <code>search</code> e <code>ask</code>, e um painel de monitoramento.</p></div>
+        <div class="card"><h3>Roda localmente</h3><p>Postgres com pgvector e Ollama para os embeddings. Nenhuma chave de API é necessária; Claude, OpenAI ou Grok podem ser configurados para as respostas.</p></div>
       </div>
       <p class="note">Veja cada parte e o arquivo por trás dela na <a href="diagrams/architecture.html">página de arquitetura</a>.</p>
     </section>

@@ -23,3 +23,5 @@ th { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: v
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--shape-radius); }
 .tag { font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: var(--shape-radius); background: var(--ok-bg); color: var(--ok); white-space: nowrap; }
 .tag.opt { background: var(--warn-bg); color: var(--warn); }
+.narrow-hint { display: none; }
+@media (max-width: 700px) { .narrow-hint { display: block; } }

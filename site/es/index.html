@@ -30,6 +30,23 @@
       <div class="row"><a class="btn" href="diagrams/architecture.html">Ver la arquitectura</a><a class="btn alt" href="slides/deck.html">Ver las diapositivas</a><a class="btn alt" href="https://github.com/rdorta27/knowman">GitHub</a></div>
     </section>
     <section>
+      <h2>La idea en tres partes</h2>
+      <div class="grid">
+        <div class="card"><h3>Concepto central</h3><p>knowman es un programa que lee una carpeta de notas Markdown. Responde tu pregunta con pasajes de esas notas. Cada pasaje indica su archivo y su rango de líneas.</p></div>
+        <div class="card"><h3>Analogía física</h3><p>Imagina un bibliotecario que atiende una sola estantería. Le haces una pregunta. Te entrega las páginas que coinciden, con el libro y el número de línea. Si ninguna página coincide, te lo dice y no te entrega nada.</p></div>
+      </div>
+      <div class="card"><h3>Mecánica técnica</h3>
+      <ul>
+        <li><b>Observador</b> detecta cada archivo <code>.md</code> añadido, editado o borrado y crea una tarea.</li>
+        <li><b>Procesador</b> toma una tarea a la vez y la ejecuta.</li>
+        <li><b>Fragmentador</b> divide cada nota en las líneas en blanco y registra el rango de líneas.</li>
+        <li><b>Ollama</b> convierte cada fragmento en un vector.</li>
+        <li><b>Postgres con pgvector</b> guarda los fragmentos y los vectores.</li>
+        <li><b>Búsqueda</b> convierte tu pregunta en un vector y devuelve los fragmentos más cercanos.</li>
+        <li><b>Filtro de distancia</b> descarta los fragmentos a más de 0.5. Si no queda ninguno, imprime <code>No evidence found for that query.</code></li>
+      </ul></div>
+    </section>
+    <section>
       <h2>Cómo se ve</h2>
       <!-- source: core/README.md "What it looks like" -->
       <pre><code><span class="dim">$ knowman search "why Postgres"</span>
@@ -45,15 +62,15 @@ decision-log.md:L1-L3
 
 <span class="dim">$ knowman search "capital of mongolia"</span>
 No evidence found for that query.</code></pre>
-      <p class="note">Cada resultado es un pasaje con su rango de líneas. Con un modelo de lenguaje configurado, <code>knowman ask</code> redacta prosa a partir de esos mismos pasajes. La recuperación no necesita modelo de lenguaje. Fuente: <code>core/README.md</code>.</p>
+      <p class="note">Cada resultado es un pasaje con su rango de líneas. Con un modelo de lenguaje configurado, <code>knowman ask</code> redacta prosa a partir de esos mismos pasajes. La recuperación no necesita modelo de lenguaje. El programa imprime sus mensajes en inglés en todos los idiomas del sitio. Fuente: <code>core/README.md</code>.</p>
     </section>
     <section>
       <h2>Qué hay dentro</h2>
       <div class="grid">
-        <div class="card"><h3>Recuperación con citas</h3><p>Los trozos conservan su rango de líneas, así que una cita apunta a las líneas exactas. Si nada cae dentro del umbral de distancia, es un negativo explícito.</p></div>
-        <div class="card"><h3>Se mantiene al día</h3><p>Un vigilante convierte las notas añadidas, editadas y borradas en trabajos, y un trabajador las indexa.</p></div>
-        <div class="card"><h3>Cuatro formas de entrar</h3><p>Una CLI, una API HTTP, un servidor MCP con <code>search</code> y <code>ask</code>, y un panel de monitoreo.</p></div>
-        <div class="card"><h3>Local primero</h3><p>Postgres con pgvector y Ollama para los embeddings. No hace falta clave de API; se puede configurar Claude, OpenAI o Grok para las respuestas.</p></div>
+        <div class="card"><h3>Recuperación con citas</h3><p>Los fragmentos conservan su rango de líneas, así que una cita apunta a las líneas exactas. Si nada cae dentro del umbral de distancia, es un negativo explícito.</p></div>
+        <div class="card"><h3>Índice actualizado</h3><p>Un observador convierte las notas añadidas, editadas y borradas en tareas, y un procesador las indexa.</p></div>
+        <div class="card"><h3>Cuatro puntos de entrada</h3><p>Una CLI, una API HTTP, un servidor MCP con <code>search</code> y <code>ask</code>, y un panel de monitoreo.</p></div>
+        <div class="card"><h3>Funciona en local</h3><p>Postgres con pgvector y Ollama para los embeddings. No hace falta clave de API; se puede configurar Claude, OpenAI o Grok para las respuestas.</p></div>
       </div>
       <p class="note">Mira cada parte y el archivo que la implementa en la <a href="diagrams/architecture.html">página de arquitectura</a>.</p>
     </section>

@@ -23,7 +23,7 @@
 <div class="cols">
   <div class="col">
     <div class="card"><p><b>grep encontra palavras, não respostas.</b> Ele não diz o que foi decidido sobre X, nem onde isso está escrito.</p></div>
-    <div class="card"><p><b>Um assistente de chat pode inventar uma fonte.</b> Ele responde com fluência, suas notas dizendo algo ou não.</p></div>
+    <div class="card"><p><b>Um assistente de chat pode inventar uma fonte.</b> Ele responde mesmo quando as suas notas não dizem nada.</p></div>
     <div class="card"><p><b>Você quer a evidência, não um chute.</b> O arquivo exato e as linhas exatas, ou um honesto &laquo;nada encontrado&raquo;.</p></div>
   </div>
 </div>
@@ -57,14 +57,14 @@ No evidence found for that query.</pre>
 
 <section class="slide" id="s3" aria-label="Como funciona">
 <div class="bar"><img src="../../favicon.svg" alt=""><span>knowman</span><span class="meta">3 / 6</span></div>
-<h1>Um vigia alimenta uma fila. <span>Uma pergunta é pareada por distância.</span></h1>
+<h1>Um observador alimenta uma fila. <span>Uma pergunta é pareada por distância.</span></h1>
 <div class="cols" style="flex-direction:column;gap:12px;padding-bottom:10px">
   <p class="lane">Ingestão</p>
   <div class="flow">
     <div class="node"><b>Notas</b><span>arquivos .md</span></div><div class="arrow">&rarr;</div>
-    <div class="node"><b>Vigia</b><span>watcher.py</span></div><div class="arrow">&rarr;</div>
-    <div class="node"><b>Fila de trabalhos</b><span>store.py</span></div><div class="arrow">&rarr;</div>
-    <div class="node"><b>Trabalhador</b><span>worker.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Observador</b><span>watcher.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Fila de tarefas</b><span>store.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Processador</b><span>worker.py</span></div><div class="arrow">&rarr;</div>
     <div class="node"><b>Fragmentador</b><span>chunking.py</span></div><div class="arrow">&rarr;</div>
     <div class="node"><b>Postgres</b><span>pgvector, HNSW</span></div>
   </div>
@@ -155,8 +155,8 @@ docker compose exec api \
   <span id="pos" aria-live="polite">1 / 6</span>
   <button id="next" type="button" aria-label="Próximo slide">&rarr;</button>
   <button id="full" type="button" aria-label="Tela cheia (f)">Tela cheia</button>
-  <a href="../../index.html">Início</a>
-  <a href="../../diagrams/architecture.html">Diagrama</a>
+  <a href="../index.html">Início</a>
+  <a href="../diagrams/architecture.html">Diagrama</a>
   <a class="lang" href="../../slides/deck.html" hreflang="en" lang="en">EN</a>
   <a class="lang" href="../../es/slides/deck.html" hreflang="es" lang="es">ES</a>
   <a class="lang" href="deck.html" hreflang="pt-BR" lang="pt-BR" aria-current="true">PT</a>

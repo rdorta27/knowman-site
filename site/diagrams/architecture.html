@@ -32,6 +32,8 @@
       <span>dashed arrow: reads or writes the database</span>
     </div>
 
+    <p class="note narrow-hint">On a narrow screen, read the <a href="#parts">table of every part</a> instead of the drawings.</p>
+
     <h2 id="flows">The two flows</h2>
     <div class="scroller" tabindex="0" aria-label="Architecture drawing, scrolls sideways on a narrow screen">
 <svg xmlns="http://www.w3.org/2000/svg" class="arch" viewBox="0 0 1058 640" role="img" aria-labelledby="at ad"><title id="at">knowman architecture, the ingestion and query flows</title><desc id="ad">Ingestion flow: notes, watcher, job queue, worker, chunker, embeddings, Postgres. Query flow: embed query, nearest chunks, distance filter, citations, optional LLM answer. Entry points: CLI, HTTP API, MCP server, dashboard. The second drawing groups the modules by layer; the table below lists every part.</desc>
@@ -128,7 +130,7 @@
     </div>
     <p class="note">The arrow on the left runs from the layer that calls to the layer it depends on. Config, the access guard and logging are drawn last because every layer above reads them. Source: <code>core/src/knowman/</code>, <code>core/README.md</code>, <code>core/docs/running.md</code>.</p>
 
-    <h2>Every part</h2>
+    <h2 id="parts">Every part</h2>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Part</th><th scope="col">Code</th><th scope="col">Status</th><th scope="col">What it does</th></tr></thead>
       <tbody>

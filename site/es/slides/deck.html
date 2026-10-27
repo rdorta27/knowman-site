@@ -23,7 +23,7 @@
 <div class="cols">
   <div class="col">
     <div class="card"><p><b>grep encuentra palabras, no respuestas.</b> No puede decirte qué se decidió sobre X, ni dónde está escrito.</p></div>
-    <div class="card"><p><b>Un asistente de chat puede inventar una fuente.</b> Responde con fluidez, digan lo que digan tus notas.</p></div>
+    <div class="card"><p><b>Un asistente de chat puede inventar una fuente.</b> Responde incluso cuando tus notas no dicen nada.</p></div>
     <div class="card"><p><b>Quieres la evidencia, no una conjetura.</b> El archivo exacto y las líneas exactas, o un honesto &laquo;no se encontró nada&raquo;.</p></div>
   </div>
 </div>
@@ -57,26 +57,26 @@ No evidence found for that query.</pre>
 
 <section class="slide" id="s3" aria-label="Cómo funciona">
 <div class="bar"><img src="../../favicon.svg" alt=""><span>knowman</span><span class="meta">3 / 6</span></div>
-<h1>Un vigilante alimenta una cola. <span>Una pregunta se empareja por distancia.</span></h1>
+<h1>Un observador alimenta una cola. <span>Una pregunta se empareja por distancia.</span></h1>
 <div class="cols" style="flex-direction:column;gap:12px;padding-bottom:10px">
   <p class="lane">Ingesta</p>
   <div class="flow">
     <div class="node"><b>Notas</b><span>archivos .md</span></div><div class="arrow">&rarr;</div>
-    <div class="node"><b>Vigilante</b><span>watcher.py</span></div><div class="arrow">&rarr;</div>
-    <div class="node"><b>Cola de trabajos</b><span>store.py</span></div><div class="arrow">&rarr;</div>
-    <div class="node"><b>Trabajador</b><span>worker.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Observador</b><span>watcher.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Cola de tareas</b><span>store.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Procesador</b><span>worker.py</span></div><div class="arrow">&rarr;</div>
     <div class="node"><b>Fragmentador</b><span>chunking.py</span></div><div class="arrow">&rarr;</div>
     <div class="node"><b>Postgres</b><span>pgvector, HNSW</span></div>
   </div>
   <p class="lane">Consulta</p>
   <div class="flow">
     <div class="node"><b>Embed de la consulta</b><span>retrieval.py</span></div><div class="arrow">&rarr;</div>
-    <div class="node"><b>Trozos más cercanos</b><span>store.py</span></div><div class="arrow">&rarr;</div>
+    <div class="node"><b>Fragmentos más cercanos</b><span>store.py</span></div><div class="arrow">&rarr;</div>
     <div class="node"><b>Filtro de distancia</b><span>retrieval.py</span></div><div class="arrow">&rarr;</div>
     <div class="node"><b>Citas</b><span>path:Lstart-Lend</span></div><div class="arrow">&rarr;</div>
     <div class="node opt"><b>Respuesta del LLM</b><span>ask.py, llm/</span><em>OPCIONAL</em></div>
   </div>
-  <p class="card" style="font-size:22px;color:var(--mu);padding:20px 24px;margin-top:8px">Cada trozo conserva el rango de líneas del que salió; eso es lo que hace exacta una cita. Si nada está dentro del umbral de distancia, el resultado es el negativo explícito y nunca se llama al modelo de lenguaje.</p>
+  <p class="card" style="font-size:22px;color:var(--mu);padding:20px 24px;margin-top:8px">Cada fragmento conserva el rango de líneas del que salió; eso es lo que hace exacta una cita. Si nada está dentro del umbral de distancia, el resultado es el negativo explícito y nunca se llama al modelo de lenguaje.</p>
 </div>
 <p class="foot">Diagrama completo: <code>architecture.html</code> &middot; Fuente: <code>core/README.md</code>, sección How it works.</p>
 </section>
@@ -97,7 +97,7 @@ groundedness: 100.00% (25/25), delta: +0.00%</pre>
   <div class="col">
     <div class="card"><p><b>Una tasa de acierto.</b> Una pregunta pasa cuando el archivo citado es el esperado, o cuando no se devuelve evidencia para una pregunta que no tiene.</p></div>
     <div class="card"><p><b>Cada corrida se guarda.</b> La siguiente reporta el cambio desde la última, así que una regresión aparece como una caída.</p></div>
-    <div class="card"><p><b>Ya encontró un bug.</b> Un encabezado suelto se volvió su propio trozo y coincidía con preguntas sin relación; la evaluación lo detectó.</p></div>
+    <div class="card"><p><b>Ya encontró un bug.</b> Un encabezado suelto se volvió su propio fragmento y coincidía con preguntas sin relación; la evaluación lo detectó.</p></div>
   </div>
 </div>
 <p class="foot">Fuentes: <code>core/README.md</code>, <code>core/src/knowman/evaldata/dataset.json</code>, <code>core/CHANGELOG.md</code>. El corpus de muestra es pequeño; esto es un chequeo de regresión, no un benchmark.</p>
@@ -155,8 +155,8 @@ docker compose exec api \
   <span id="pos" aria-live="polite">1 / 6</span>
   <button id="next" type="button" aria-label="Diapositiva siguiente">&rarr;</button>
   <button id="full" type="button" aria-label="Pantalla completa (f)">Pantalla completa</button>
-  <a href="../../index.html">Inicio</a>
-  <a href="../../diagrams/architecture.html">Diagrama</a>
+  <a href="../index.html">Inicio</a>
+  <a href="../diagrams/architecture.html">Diagrama</a>
   <a class="lang" href="../../slides/deck.html" hreflang="en" lang="en">EN</a>
   <a class="lang" href="deck.html" hreflang="es" lang="es" aria-current="true">ES</a>
   <a class="lang" href="../../pt-br/slides/deck.html" hreflang="pt-BR" lang="pt-BR">PT</a>
