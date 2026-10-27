@@ -26,8 +26,14 @@
     <section>
       <span class="eyebrow">Markdown notes, local, cited</span>
       <h1>Ask your notes. <span>Get the file and the lines.</span></h1>
-      <p class="lead">knowman indexes a folder of <code>.md</code> files and answers from that folder only. When it finds nothing, it says so instead of guessing.</p>
+      <p class="lead">knowman reads a folder of Markdown notes and answers your questions from those notes only. Every answer shows the file and the lines it came from. When the notes hold no answer, knowman says so.</p>
       <div class="row"><a class="btn" href="diagrams/architecture.html">See the architecture</a><a class="btn alt" href="slides/deck.html">View the slides</a><a class="btn alt" href="https://github.com/rdorta27/knowman">GitHub</a></div>
+    </section>
+    <section>
+      <h2>What it solves</h2>
+      <ul><li>Find what you decided and where you wrote it.</li><li>Answer a question from meeting notes, runbooks or internal docs.</li><li>Give an AI assistant a source it must cite.</li></ul>
+      <h3>How it differs</h3>
+      <div class="grid"><div class="card"><h3>grep</h3><p>grep matches the characters you type. knowman matches the meaning of your question.</p></div><div class="card"><h3>A chat with pasted files</h3><p>A chat answers even when the notes say nothing. knowman prints <code>No evidence found for that query.</code> and calls no language model.</p></div><div class="card"><h3>Wiki search</h3><p>Wiki search lists pages. knowman returns the passage and its line range.</p></div></div>
     </section>
     <section>
       <h2>The idea in three parts</h2>
@@ -62,7 +68,7 @@ decision-log.md:L1-L3
 
 <span class="dim">$ knowman search "capital of mongolia"</span>
 No evidence found for that query.</code></pre>
-      <p class="note">Each result is a passage with its line range. With a language model configured, <code>knowman ask</code> writes prose from those same passages. Retrieval needs no language model. The program prints its messages in English in every site language. Source: <code>core/README.md</code>.</p>
+      <p class="note">Each result is a passage with its line range, listed from the closest match to the farthest. With a language model configured, <code>knowman ask</code> writes prose from those same passages. Retrieval needs no language model. The program prints its messages in English in every site language. Source: <code>core/README.md</code>.</p>
     </section>
     <section>
       <h2>What is inside</h2>
@@ -71,8 +77,14 @@ No evidence found for that query.</code></pre>
         <div class="card"><h3>Live index</h3><p>A watcher turns added, edited and deleted notes into jobs, and a worker indexes them.</p></div>
         <div class="card"><h3>Four entry points</h3><p>A CLI, an HTTP API, an MCP server with <code>search</code> and <code>ask</code>, and a monitoring panel.</p></div>
         <div class="card"><h3>Runs locally</h3><p>Postgres with pgvector and Ollama for embeddings. No API key is needed; Claude, OpenAI or Grok can be set for answers.</p></div>
+      <!-- source: core/README.md "What it looks like" (groundedness: 100.00% (25/25)); 25 entries in core/src/knowman/evaldata/dataset.json -->
+        <div class="card"><h3>Measured retrieval</h3><p><code>knowman eval</code> scores 25 labeled questions: 100% (25/25). The set is small. It checks for regressions; it is not a benchmark.</p></div>
       </div>
       <p class="note">See each part and the file behind it on the <a href="diagrams/architecture.html">architecture page</a>.</p>
+    </section>
+    <section>
+      <h2>Limits</h2>
+      <ul><li><b>Markdown only.</b> knowman is not a note editor or a wiki. It reads a folder you already own.</li><li><b>Embeddings need Ollama.</b> A new embeddings model needs a full re-index.</li><li><b>Small local models hedge.</b> The written answer is only as good as the model you set.</li><li><b>The API is open by default.</b> Turn on <code>API_TOKEN</code> and the rate limit before you expose it beyond localhost.</li></ul>
     </section>
     <section>
       <h2>Install</h2>
@@ -82,6 +94,15 @@ cd knowman
 ./install.sh
 docker compose exec api knowman search "why Postgres"</code></pre>
       <p class="note">Needs Docker and the Compose plugin. On Arch, <code>./install.sh --mode native</code> runs without Docker. The script prints the commands for anything missing and stops instead of installing it.</p>
+    </section>
+    <section>
+      <h2>Use your own notes</h2>
+      <pre><code>cp .env.example .env
+# in .env: CORPUS_PATH=/notes
+# in docker-compose.yml, under api > volumes: /home/you/notes:/notes
+docker compose up -d
+docker compose exec api knowman ingest</code></pre>
+      <p class="note">After this first index, the watcher updates the index when you add, edit or delete a <code>.md</code> file. Open <code>http://localhost:8000/dashboard</code> to see the index, the job queue and the last eval. Source: <code>core/README.md</code>.</p>
     </section>
   </main>
   <footer><span>knowman · MIT</span><a href="diagrams/architecture.html">Architecture</a><a href="slides/deck.html">Slides</a><a href="https://github.com/rdorta27/knowman">GitHub</a></footer>

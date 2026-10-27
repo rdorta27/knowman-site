@@ -26,8 +26,14 @@
     <section>
       <span class="eyebrow">Notas Markdown, locais, citadas</span>
       <h1>Pergunte às suas notas. <span>Receba o arquivo e as linhas.</span></h1>
-      <p class="lead">O knowman indexa uma pasta de arquivos <code>.md</code> e responde só com essa pasta. Quando não encontra nada, ele diz isso em vez de inventar.</p>
+      <p class="lead">O knowman lê uma pasta de notas Markdown e responde às suas perguntas só com essas notas. Cada resposta mostra o arquivo e as linhas de onde vem. Se as notas não contêm a resposta, o knowman avisa.</p>
       <div class="row"><a class="btn" href="diagrams/architecture.html">Ver a arquitetura</a><a class="btn alt" href="slides/deck.html">Ver os slides</a><a class="btn alt" href="https://github.com/rdorta27/knowman">GitHub</a></div>
+    </section>
+    <section>
+      <h2>O que ele resolve</h2>
+      <ul><li>Encontre o que você decidiu e onde escreveu.</li><li>Responda a uma pergunta com notas de reunião, runbooks ou documentação interna.</li><li>Dê a um assistente de IA uma fonte que ele deve citar.</li></ul>
+      <h3>No que ele difere</h3>
+      <div class="grid"><div class="card"><h3>grep</h3><p>O grep busca os caracteres que você digita. O knowman busca o significado da sua pergunta.</p></div><div class="card"><h3>Um chat com arquivos colados</h3><p>Um chat responde mesmo quando as notas não dizem nada. O knowman imprime <code>No evidence found for that query.</code> e não chama nenhum modelo de linguagem.</p></div><div class="card"><h3>A busca de um wiki</h3><p>A busca de um wiki lista páginas. O knowman devolve o trecho e o seu intervalo de linhas.</p></div></div>
     </section>
     <section>
       <h2>A ideia em três partes</h2>
@@ -62,7 +68,7 @@ decision-log.md:L1-L3
 
 <span class="dim">$ knowman search "capital of mongolia"</span>
 No evidence found for that query.</code></pre>
-      <p class="note">Cada resultado é um trecho com o seu intervalo de linhas. Com um modelo de linguagem configurado, <code>knowman ask</code> escreve prosa a partir desses mesmos trechos. A recuperação não precisa de modelo de linguagem. O programa imprime suas mensagens em inglês em todos os idiomas do site. Fonte: <code>core/README.md</code>.</p>
+      <p class="note">Cada resultado é um trecho com o seu intervalo de linhas, do mais próximo ao mais distante. Com um modelo de linguagem configurado, <code>knowman ask</code> escreve prosa a partir desses mesmos trechos. A recuperação não precisa de modelo de linguagem. O programa imprime suas mensagens em inglês em todos os idiomas do site. Fonte: <code>core/README.md</code>.</p>
     </section>
     <section>
       <h2>O que tem dentro</h2>
@@ -71,8 +77,14 @@ No evidence found for that query.</code></pre>
         <div class="card"><h3>Índice atualizado</h3><p>Um observador transforma notas adicionadas, editadas e apagadas em tarefas, e um processador as indexa.</p></div>
         <div class="card"><h3>Quatro pontos de entrada</h3><p>Uma CLI, uma API HTTP, um servidor MCP com <code>search</code> e <code>ask</code>, e um painel de monitoramento.</p></div>
         <div class="card"><h3>Roda localmente</h3><p>Postgres com pgvector e Ollama para os embeddings. Nenhuma chave de API é necessária; Claude, OpenAI ou Grok podem ser configurados para as respostas.</p></div>
+      <!-- source: core/README.md "What it looks like" (groundedness: 100.00% (25/25)); 25 entries in core/src/knowman/evaldata/dataset.json -->
+        <div class="card"><h3>Recuperação medida</h3><p><code>knowman eval</code> pontua 25 perguntas rotuladas: 100% (25/25). O conjunto é pequeno. Ele detecta regressões; não é um benchmark.</p></div>
       </div>
       <p class="note">Veja cada parte e o arquivo por trás dela na <a href="diagrams/architecture.html">página de arquitetura</a>.</p>
+    </section>
+    <section>
+      <h2>Limites</h2>
+      <ul><li><b>Só Markdown.</b> O knowman não é um editor de notas nem um wiki. Ele lê uma pasta que já é sua.</li><li><b>Os embeddings precisam do Ollama.</b> Um novo modelo de embeddings exige reindexar tudo.</li><li><b>Modelos locais pequenos hesitam.</b> A resposta escrita vale o que vale o modelo que você configurar.</li><li><b>A API é aberta por padrão.</b> Ative <code>API_TOKEN</code> e o limite de taxa antes de expô-la além do localhost.</li></ul>
     </section>
     <section>
       <h2>Instalar</h2>
@@ -82,6 +94,15 @@ cd knowman
 ./install.sh
 docker compose exec api knowman search "why Postgres"</code></pre>
       <p class="note">Precisa de Docker e do plugin do Compose. No Arch, <code>./install.sh --mode native</code> roda sem Docker. O script imprime os comandos do que falta e para em vez de instalá-lo.</p>
+    </section>
+    <section>
+      <h2>Use as suas notas</h2>
+      <pre><code>cp .env.example .env
+# no .env: CORPUS_PATH=/notes
+# no docker-compose.yml, em api > volumes: /home/you/notes:/notes
+docker compose up -d
+docker compose exec api knowman ingest</code></pre>
+      <p class="note">Depois deste primeiro índice, o observador atualiza o índice quando você adiciona, edita ou apaga um arquivo <code>.md</code>. Abra <code>http://localhost:8000/dashboard</code> para ver o índice, a fila de tarefas e a última avaliação. Fonte: <code>core/README.md</code>.</p>
     </section>
   </main>
   <footer><span>knowman · MIT</span><a href="diagrams/architecture.html">Arquitetura</a><a href="slides/deck.html">Slides</a><a href="https://github.com/rdorta27/knowman">GitHub</a></footer>

@@ -24,7 +24,7 @@
     <nav class="langs" aria-label="Idioma"><a href="../../diagrams/architecture.html" hreflang="en" lang="en">EN</a><a href="../../es/diagrams/architecture.html" hreflang="es" lang="es">ES</a><a href="architecture.html" hreflang="pt-BR" lang="pt-BR" aria-current="true">PT</a></nav>
   </header>
   <main id="main">
-    <h1>Como as partes se encaixam</h1>
+    <h1>Arquitetura: da nota à resposta citada</h1>
     <p class="lead">As notas entram por um observador e uma fila de tarefas; as perguntas voltam como citações com intervalos de linhas. Cada caixa nomeia o arquivo que a implementa.</p>
     <div class="legend" aria-label="Legenda">
       <span><svg width="26" height="14" aria-hidden="true"><rect x="1" y="1" width="24" height="12" rx="2" fill="none" stroke="var(--brand)" stroke-width="2"/></svg>real: sempre faz parte do sistema</span>
@@ -131,6 +131,7 @@
     <p class="note">A seta da esquerda vai da camada que chama para a camada da qual ela depende. Configuração, controle de acesso e registro ficam no fim porque todas as camadas acima os leem. Fonte: <code>core/src/knowman/</code>, <code>core/README.md</code>, <code>core/docs/running.md</code>.</p>
 
     <h2 id="parts">Cada parte</h2>
+    <p class="note">Os nomes da coluna Parte estão traduzidos. Os nomes da coluna Código são os arquivos e as configurações reais.</p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Parte</th><th scope="col">Código</th><th scope="col">Estado</th><th scope="col">O que faz</th></tr></thead>
       <tbody>

@@ -24,7 +24,7 @@
     <nav class="langs" aria-label="Language"><a href="architecture.html" hreflang="en" lang="en" aria-current="true">EN</a><a href="../es/diagrams/architecture.html" hreflang="es" lang="es">ES</a><a href="../pt-br/diagrams/architecture.html" hreflang="pt-BR" lang="pt-BR">PT</a></nav>
   </header>
   <main id="main">
-    <h1>How the parts fit</h1>
+    <h1>Architecture: from note to cited answer</h1>
     <p class="lead">Notes go in through a watcher and a job queue; questions come back as citations with line ranges. Each box names the file that implements it.</p>
     <div class="legend" aria-label="Legend">
       <span><svg width="26" height="14" aria-hidden="true"><rect x="1" y="1" width="24" height="12" rx="2" fill="none" stroke="var(--brand)" stroke-width="2"/></svg>real: always part of the system</span>
@@ -131,6 +131,7 @@
     <p class="note">The arrow on the left runs from the layer that calls to the layer it depends on. Config, the access guard and logging are drawn last because every layer above reads them. Source: <code>core/src/knowman/</code>, <code>core/README.md</code>, <code>core/docs/running.md</code>.</p>
 
     <h2 id="parts">Every part</h2>
+    <p class="note">Names in the Part column are translated. Names in the Code column are the real files and settings.</p>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col">Part</th><th scope="col">Code</th><th scope="col">Status</th><th scope="col">What it does</th></tr></thead>
       <tbody>
