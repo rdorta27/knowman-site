@@ -7,7 +7,7 @@ Source of every fact: the `core` repo (README, CHANGELOG, `src/knowman/`).
 
 ## Languages
 
-Three copies of the same pages, no generator and no JavaScript needed to switch:
+Three copies of the same pages, no generator and no JavaScript needed to switch. `site/lang.js` sends a first-time visitor to the language of their browser (English when it is none of the three). A click on EN, ES or PT is saved in `localStorage` and wins over the browser language and over the page the visitor landed on:
 
 | Language | Path |
 | --- | --- |
