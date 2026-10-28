@@ -44,5 +44,12 @@ for path in glob.glob(f"{ROOT}/**/index.html", recursive=True) + glob.glob(f"{RO
     if "25/25" not in open(path, encoding="utf-8").read():
         errors.append(f"{path}: eval figure 25/25 missing or changed")
 
+# every absolute site URL in the head metadata must point at a file in site/
+SITE = "https://rdorta27.github.io/knowman-site/"
+for path in glob.glob(f"{ROOT}/**/*.html", recursive=True):
+    for url in re.findall(r'(?:content|href)="' + re.escape(SITE) + r'([^"#]*)"', open(path, encoding="utf-8").read()):
+        if not os.path.exists(os.path.join(ROOT, url or "index.html")):
+            errors.append(f"{path}: {SITE}{url} has no file in {ROOT}/")
+
 print("\n".join(errors) or "site ok")
 sys.exit(1 if errors else 0)

@@ -32,3 +32,8 @@ URL: https://rdorta27.github.io/knowman-site/
 `site/branding/` is an identical copy of `core/branding/` (palette, fonts and theme).
 Do not edit it here: change `core/branding/tokens.json` and run
 `python3 scripts/build_brand.py --sync` from `core/`. `--check` fails if the copy drifts.
+
+## Sharing image
+
+`site/og-image.png` (1200×630) is the Open Graph and X card image of the three home pages.
+Its source is `scripts/og-image.html`; the render command is at the top of that file.
